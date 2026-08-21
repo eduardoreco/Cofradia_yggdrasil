@@ -1,0 +1,420 @@
+/* =============================================================================
+   modal.css — Modales de creación/edición
+   Cofradía Yggdrasil
+   ============================================================================= */
+
+/* ============================================================
+   BACKDROP
+   ============================================================ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(28, 28, 46, 0.55);
+  backdrop-filter: blur(3px);
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  opacity: 0;
+  animation: backdropIn var(--transition-normal) forwards;
+}
+
+.modal-backdrop.closing {
+  animation: backdropOut var(--transition-normal) forwards;
+}
+
+@keyframes backdropIn  { to   { opacity: 1; } }
+@keyframes backdropOut { from { opacity: 1; } to { opacity: 0; } }
+
+/* ============================================================
+   MODAL CONTAINER
+   ============================================================ */
+.modal {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(20px) scale(0.97);
+  animation: modalIn var(--transition-normal) forwards;
+}
+
+.modal-backdrop.closing .modal {
+  animation: modalOut var(--transition-normal) forwards;
+}
+
+@keyframes modalIn {
+  to { transform: translateY(0) scale(1); }
+}
+@keyframes modalOut {
+  from { transform: translateY(0) scale(1); }
+  to   { transform: translateY(20px) scale(0.97); opacity: 0; }
+}
+
+/* Modal grande */
+.modal-lg {
+  max-width: 680px;
+}
+
+/* ============================================================
+   MODAL HEADER
+   ============================================================ */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  background-color: var(--color-surface);
+  z-index: 1;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.modal-title svg {
+  width: 20px;
+  height: 20px;
+  color: var(--color-primary-light);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  border: none;
+  background: none;
+  flex-shrink: 0;
+}
+
+.modal-close:hover {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text);
+}
+
+/* ============================================================
+   MODAL BODY
+   ============================================================ */
+.modal-body {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ============================================================
+   GRUPOS DE FORMULARIO
+   ============================================================ */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.form-label .required {
+  color: var(--color-red);
+}
+
+.form-label .optional {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  font-weight: var(--font-weight-normal);
+}
+
+.form-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  margin-top: -var(--space-1);
+}
+
+.form-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+}
+
+/* Input con error */
+.input.error {
+  border-color: var(--color-error);
+}
+
+.input.error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+/* ============================================================
+   SELECTOR DE IMAGEN (subir/URL)
+   ============================================================ */
+.image-source-tabs {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: var(--space-3);
+}
+
+.image-tab-btn {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-secondary);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.image-tab-btn.active {
+  background-color: var(--color-primary-light);
+  color: #fff;
+}
+
+.image-tab-content {
+  display: none;
+}
+
+.image-tab-content.active {
+  display: block;
+}
+
+/* Preview de imagen */
+.image-preview-wrap {
+  margin-top: var(--space-3);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-alt);
+  max-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-preview-wrap img {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+}
+
+.image-preview-wrap.hidden { display: none; }
+
+/* Upload drop zone */
+.upload-zone {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  color: var(--color-muted);
+}
+
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--color-primary-light);
+  background-color: var(--color-primary-pale);
+  color: var(--color-primary-light);
+}
+
+.upload-zone input[type="file"] {
+  display: none;
+}
+
+.upload-zone svg {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto var(--space-2);
+}
+
+.upload-zone p {
+  font-size: var(--font-size-sm);
+}
+
+.upload-zone .upload-hint {
+  font-size: var(--font-size-xs);
+  margin-top: var(--space-1);
+}
+
+/* ============================================================
+   SELECTOR DE PLATAFORMA
+   ============================================================ */
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: var(--space-2);
+  max-height: 200px;
+  overflow-y: auto;
+  padding: var(--space-1);
+}
+
+.platform-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.platform-option:hover {
+  border-color: var(--color-primary-light);
+  background-color: var(--color-primary-pale);
+}
+
+.platform-option.selected {
+  border-color: var(--color-primary-light);
+  background-color: var(--color-primary-pale);
+}
+
+.platform-option img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.platform-option span {
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ============================================================
+   CAMPO "QUIEN MODIFICA"
+   ============================================================ */
+.modifier-field {
+  padding: var(--space-4);
+  background-color: var(--color-surface-alt);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.modifier-field .form-label {
+  margin-bottom: var(--space-2);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================================
+   MODAL FOOTER
+   ============================================================ */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border);
+  position: sticky;
+  bottom: 0;
+  background-color: var(--color-surface);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+
+/* ============================================================
+   MODAL DE CONFIRMACIÓN (Delete)
+   ============================================================ */
+.modal-confirm .modal {
+  max-width: 420px;
+}
+
+.confirm-body {
+  padding: var(--space-6);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.confirm-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background-color: #FEE2E2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--color-red);
+}
+
+.confirm-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.confirm-message {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.confirm-name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal {
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    max-height: 85vh;
+    animation: modalInMobile var(--transition-normal) forwards;
+  }
+
+  @keyframes modalInMobile {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .modal-body {
+    padding: var(--space-4);
+  }
+
+  .platform-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  }
+}

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cofradía Yggdrasil</title>
+  <meta name="description" content="Directorio temático navegable — Cofradía Yggdrasil" />
+
+  <!-- CSS: orden importa (theme → main → layout → cards → modal → search → login) -->
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/cards.css" />
+  <link rel="stylesheet" href="css/modal.css" />
+  <link rel="stylesheet" href="css/search.css" />
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     PANTALLA DE LOGIN (dummy)
+     ============================================================ -->
+<div id="login-screen" class="login-screen">
+  <div class="login-card">
+    <!-- Logo: se muestra la imagen cuando carga desde Supabase, si no el emoji -->
+    <img class="login-logo" id="login-logo-img" src="" alt="Yggdrasil" style="display:none" />
+    <div class="login-logo-placeholder" id="login-logo-placeholder">🌳</div>
+
+    <h1 class="login-title">Cofradía Yggdrasil</h1>
+    <p class="login-subtitle">Ingresa tu nombre para continuar</p>
+
+    <input
+      type="text"
+      id="login-username"
+      class="login-input"
+      placeholder="Tu nombre..."
+      autocomplete="off"
+      maxlength="50"
+    />
+    <button id="login-btn" class="login-btn">Entrar</button>
+
+    <p class="login-footer-text">Directorio temático navegable</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     APP PRINCIPAL (oculta hasta que el usuario haga login)
+     ============================================================ -->
+<div id="app" class="hidden">
+
+<!-- ============================================================
+     LOADING OVERLAY — se oculta cuando la app carga
+     ============================================================ -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <p>Cargando Yggdrasil…</p>
+</div>
+
+  <!-- HEADER -->
+  <header id="header">
+    <!-- Logo + Título -->
+    <a id="header-logo" href="#" title="Inicio" data-action="go-root">
+      <div id="header-logo-placeholder">🌳</div>
+      <!-- La imagen del logo se inyecta aquí via JS cuando esté configurada -->
+    </a>
+    <span id="header-title">Cofradía Yggdrasil</span>
+
+    <!-- Barra de búsqueda -->
+    <div id="search-bar">
+      <svg id="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        id="search-input"
+        type="search"
+        placeholder="Buscar temas, sub-temas o links…"
+        autocomplete="off"
+        aria-label="Buscar en el directorio"
+      />
+    </div>
+
+    <!-- Acciones del header -->
+    <div class="header-actions">
+
+      <!-- Saludo de usuario -->
+      <span id="header-user-greeting" class="header-user" style="display:none"></span>
+
+      <!-- Importar / Exportar -->
+      <button class="header-btn" id="btn-import-export" title="Importar / Exportar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </button>
+
+      <!-- Historial de cambios -->
+      <button class="header-btn" id="btn-audit" title="Historial de cambios">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 3h18v4H3z"/><path d="M3 9h18v4H3z"/><path d="M3 15h18v4H3z"/>
+        </svg>
+      </button>
+
+      <!-- Plataformas -->
+      <button class="header-btn" id="btn-platforms" title="Gestionar plataformas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/>
+        </svg>
+      </button>
+
+      <!-- Configuración -->
+      <button class="header-btn" id="btn-settings" title="Configuración">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <nav id="breadcrumb-bar" aria-label="Ruta de navegación">
+    <!-- Se renderiza dinamicamente via JS -->
+    <div class="breadcrumb-item">
+      <span class="breadcrumb-link" data-action="go-root">🌳 Inicio</span>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main id="main-content">
+    <!-- Cabecera del nivel actual -->
+    <div id="level-header">
+      <div>
+        <h1 id="level-title">Directorio Temático</h1>
+        <p id="level-description" class="text-sm text-secondary"></p>
+      </div>
+      <div id="level-actions"></div>
+    </div>
+
+    <!-- Grid de cards — se renderiza dinamicamente via JS -->
+    <section id="cards-container">
+      <!-- Aquí se inyectan las cards de ramas y hojas -->
+    </section>
+  </main>
+
+</div><!-- /#app (main content wrapper) -->
+
+<!-- ============================================================
+     BOTÓN FLOTANTE (+) FAB
+     ============================================================ -->
+<button id="fab-add" title="Agregar" aria-label="Agregar rama o hoja" aria-expanded="false">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <line x1="12" y1="5" x2="12" y2="19"/>
+    <line x1="5" y1="12" x2="19" y2="12"/>
+  </svg>
+</button>
+
+<!-- FAB Dropdown Menu -->
+<div id="fab-menu" role="menu" aria-hidden="true">
+  <button class="fab-menu-item" id="fab-add-branch" role="menuitem">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+    </svg>
+    Agregar rama / sub-tema
+  </button>
+  <button class="fab-menu-item" id="fab-add-leaf" role="menuitem">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+    </svg>
+    Agregar link / hoja
+  </button>
+</div>
+
+<!-- ============================================================
+     OVERLAY DE BÚSQUEDA
+     ============================================================ -->
+<div id="search-overlay" role="dialog" aria-label="Resultados de búsqueda" aria-modal="true">
+  <div id="search-results-panel">
+    <div class="search-panel-header">
+      <span class="search-panel-title">Resultados de búsqueda</span>
+      <span id="search-count" class="search-count" hidden></span>
+    </div>
+    <div id="search-results-list">
+      <p class="search-prompt">Escribe al menos 3 caracteres para buscar…</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: CREAR / EDITAR RAMA
+     ============================================================ -->
+<div id="modal-branch" class="modal-backdrop" role="dialog" aria-modal="true"
+     aria-labelledby="modal-branch-title" hidden>
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-branch-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+        </svg>
+        Nueva Rama
+      </h2>
+      <button class="modal-close" data-close-modal="modal-branch" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="branch-id" />
+
+      <!-- Nombre -->
+      <div class="form-group">
+        <label class="form-label" for="branch-name">
+          Nombre <span class="required">*</span>
+        </label>
+        <input class="input" type="text" id="branch-name" placeholder="Ej: Matemáticas" required />
+      </div>
+
+      <!-- Descripción -->
+      <div class="form-group">
+        <label class="form-label" for="branch-description">
+          Descripción <span class="optional">(opcional)</span>
+        </label>
+        <textarea class="textarea input" id="branch-description"
+                  placeholder="Breve descripción del tema…"></textarea>
+      </div>
+
+      <!-- Imagen -->
+      <div class="form-group">
+        <label class="form-label">Imagen <span class="optional">(opcional)</span></label>
+        <div class="image-source-tabs">
+          <button class="image-tab-btn active" data-tab="upload" data-modal="branch">
+            Subir archivo
+          </button>
+          <button class="image-tab-btn" data-tab="url" data-modal="branch">
+            URL externa
+          </button>
+        </div>
+        <div class="image-tab-content active" data-content="upload" data-modal="branch">
+          <div class="upload-zone" id="branch-upload-zone">
+            <input type="file" id="branch-image-file" accept="image/*" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p>Haz click o arrastra una imagen aquí</p>
+            <p class="upload-hint">PNG, JPG, WebP — máx. 5 MB</p>
+          </div>
+        </div>
+        <div class="image-tab-content" data-content="url" data-modal="branch">
+          <input class="input" type="url" id="branch-image-url"
+                 placeholder="https://ejemplo.com/imagen.jpg" />
+        </div>
+        <div class="image-preview-wrap hidden" id="branch-image-preview-wrap">
+          <img id="branch-image-preview" src="" alt="Vista previa" />
+        </div>
+      </div>
+
+      <!-- Orden -->
+      <div class="form-group">
+        <label class="form-label" for="branch-order">
+          Posición / Orden <span class="optional">(opcional)</span>
+        </label>
+        <input class="input" type="number" id="branch-order" value="0" min="0" />
+        <span class="form-hint">Número que determina el orden de aparición (0 = primero)</span>
+      </div>
+
+      <!-- Quién modifica -->
+      <div class="modifier-field">
+        <label class="form-label" for="branch-modified-by">
+          Tu nombre <span class="optional">(opcional)</span>
+        </label>
+        <input class="input" type="text" id="branch-modified-by"
+               placeholder="¿Quién está haciendo este cambio?" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-branch">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-branch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Guardar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: CREAR / EDITAR HOJA (LINK)
+     ============================================================ -->
+<div id="modal-leaf" class="modal-backdrop" role="dialog" aria-modal="true"
+     aria-labelledby="modal-leaf-title" hidden>
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-leaf-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+        Nuevo Link
+      </h2>
+      <button class="modal-close" data-close-modal="modal-leaf" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="leaf-id" />
+      <input type="hidden" id="leaf-platform-id" />
+
+      <!-- Selección de plataforma -->
+      <div class="form-group">
+        <label class="form-label">
+          Plataforma <span class="required">*</span>
+        </label>
+        <div id="platform-grid" class="platform-grid">
+          <!-- Se inyecta dinámicamente via JS -->
+        </div>
+      </div>
+
+      <!-- URL -->
+      <div class="form-group">
+        <label class="form-label" for="leaf-url">
+          URL del link <span class="required">*</span>
+        </label>
+        <input class="input" type="url" id="leaf-url"
+               placeholder="https://youtube.com/watch?v=..." required />
+      </div>
+
+      <!-- Etiqueta -->
+      <div class="form-group">
+        <label class="form-label" for="leaf-label">
+          Etiqueta / Título <span class="optional">(opcional)</span>
+        </label>
+        <input class="input" type="text" id="leaf-label"
+               placeholder="Ej: Video introductorio" />
+      </div>
+
+      <!-- Imagen personalizada del link -->
+      <div class="form-group">
+        <label class="form-label">
+          Imagen del link <span class="optional">(opcional)</span>
+        </label>
+        <div class="image-source-tabs">
+          <button class="image-tab-btn active" data-tab="upload" data-modal="leaf">
+            Subir archivo
+          </button>
+          <button class="image-tab-btn" data-tab="url" data-modal="leaf">
+            URL externa
+          </button>
+        </div>
+        <div class="image-tab-content active" data-content="upload" data-modal="leaf">
+          <div class="upload-zone" id="leaf-upload-zone">
+            <input type="file" id="leaf-image-file" accept="image/*" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p>Haz click o arrastra una imagen aquí</p>
+            <p class="upload-hint">PNG, JPG, WebP — máx. 5 MB</p>
+          </div>
+        </div>
+        <div class="image-tab-content" data-content="url" data-modal="leaf">
+          <input class="input" type="url" id="leaf-image-url"
+                 placeholder="https://ejemplo.com/thumb.jpg" />
+        </div>
+        <div class="image-preview-wrap hidden" id="leaf-image-preview-wrap">
+          <img id="leaf-image-preview" src="" alt="Vista previa" />
+        </div>
+      </div>
+
+      <!-- Orden -->
+      <div class="form-group">
+        <label class="form-label" for="leaf-order">
+          Posición / Orden <span class="optional">(opcional)</span>
+        </label>
+        <input class="input" type="number" id="leaf-order" value="0" min="0" />
+      </div>
+
+      <!-- Quién modifica -->
+      <div class="modifier-field">
+        <label class="form-label" for="leaf-modified-by">
+          Tu nombre <span class="optional">(opcional)</span>
+        </label>
+        <input class="input" type="text" id="leaf-modified-by"
+               placeholder="¿Quién está haciendo este cambio?" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-leaf">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-leaf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+          <path d="M19 21H5a2 2 0 0 1-2 2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Guardar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: CONFIRMAR ELIMINACIÓN
+     ============================================================ -->
+<div id="modal-delete" class="modal-backdrop modal-confirm" role="dialog" aria-modal="true"
+     aria-labelledby="modal-delete-title" hidden>
+  <div class="modal">
+    <div class="modal-body confirm-body">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+          <path d="M10 11v6m4-6v6"/>
+          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+        </svg>
+      </div>
+      <h2 class="confirm-title" id="modal-delete-title">¿Eliminar elemento?</h2>
+      <p class="confirm-message">
+        Estás a punto de eliminar <strong id="delete-item-name" class="confirm-name"></strong>.
+        <br/>Esta acción no se puede deshacer y eliminará todo su contenido.
+      </p>
+      <!-- Quién elimina -->
+      <div class="form-group" style="width:100%">
+        <label class="form-label" for="delete-modified-by">
+          Tu nombre <span class="optional">(opcional)</span>
+        </label>
+        <input class="input" type="text" id="delete-modified-by"
+               placeholder="¿Quién está eliminando esto?" />
+      </div>
+      <input type="hidden" id="delete-entity-type" />
+      <input type="hidden" id="delete-entity-id" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-delete">Cancelar</button>
+      <button class="btn btn-danger" id="btn-confirm-delete">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+        </svg>
+        Sí, eliminar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: GESTIÓN DE PLATAFORMAS
+     ============================================================ -->
+<div id="modal-platforms" class="modal-backdrop" role="dialog" aria-modal="true"
+     aria-labelledby="modal-platforms-title" hidden>
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-platforms-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/>
+        </svg>
+        Plataformas
+      </h2>
+      <button class="modal-close" data-close-modal="modal-platforms" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div id="platforms-list">
+        <!-- Se inyecta dinámicamente -->
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-platforms">Cerrar</button>
+      <button class="btn btn-primary" id="btn-add-platform">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Nueva plataforma
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: CREAR / EDITAR PLATAFORMA
+     ============================================================ -->
+<div id="modal-platform-edit" class="modal-backdrop" role="dialog" aria-modal="true"
+     aria-labelledby="modal-platform-edit-title" hidden>
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-platform-edit-title">Nueva Plataforma</h2>
+      <button class="modal-close" data-close-modal="modal-platform-edit" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="platform-edit-id" />
+      <div class="form-group">
+        <label class="form-label" for="platform-edit-name">Nombre <span class="required">*</span></label>
+        <input class="input" type="text" id="platform-edit-name" placeholder="Ej: YouTube" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="platform-edit-icon">URL del ícono <span class="optional">(opcional)</span></label>
+        <input class="input" type="url" id="platform-edit-icon" placeholder="https://cdn.ejemplo.com/icono.svg" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="platform-edit-base-url">URL base <span class="optional">(opcional)</span></label>
+        <input class="input" type="url" id="platform-edit-base-url" placeholder="https://www.plataforma.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="platform-edit-color">Color representativo</label>
+        <div style="display:flex;gap:var(--space-3);align-items:center">
+          <input type="color" id="platform-edit-color" value="#6B7280" style="width:48px;height:38px;border-radius:var(--radius-md);border:1px solid var(--color-border);cursor:pointer;padding:2px;" />
+          <input class="input" type="text" id="platform-edit-color-hex" value="#6B7280" placeholder="#RRGGBB" style="max-width:120px" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-platform-edit">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-platform">Guardar plataforma</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: CONFIGURACIÓN GLOBAL
+     ============================================================ -->
+<div id="modal-settings" class="modal-backdrop" role="dialog" aria-modal="true"
+     aria-labelledby="modal-settings-title" hidden>
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-settings-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Configuración
+      </h2>
+      <button class="modal-close" data-close-modal="modal-settings" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Título de la app -->
+      <div class="form-group">
+        <label class="form-label" for="settings-app-title">Título de la aplicación</label>
+        <input class="input" type="text" id="settings-app-title"
+               placeholder="Cofradía Yggdrasil" />
+      </div>
+
+      <!-- Logo -->
+      <div class="form-group">
+        <label class="form-label">Logo institucional <span class="optional">(opcional)</span></label>
+        <div class="image-source-tabs">
+          <button class="image-tab-btn active" data-tab="upload" data-modal="settings">
+            Subir archivo
+          </button>
+          <button class="image-tab-btn" data-tab="url" data-modal="settings">
+            URL externa
+          </button>
+        </div>
+        <div class="image-tab-content active" data-content="upload" data-modal="settings">
+          <div class="upload-zone" id="settings-upload-zone">
+            <input type="file" id="settings-logo-file" accept="image/*" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p>Haz click o arrastra el logo aquí</p>
+            <p class="upload-hint">PNG, SVG, WebP recomendados</p>
+          </div>
+        </div>
+        <div class="image-tab-content" data-content="url" data-modal="settings">
+          <input class="input" type="url" id="settings-logo-url"
+                 placeholder="https://ejemplo.com/logo.png" />
+        </div>
+        <div class="image-preview-wrap hidden" id="settings-logo-preview-wrap">
+          <img id="settings-logo-preview" src="" alt="Vista previa del logo" style="max-height:80px;object-fit:contain;" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-settings">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save-settings">Guardar configuración</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: IMPORTAR / EXPORTAR
+     ============================================================ -->
+<div id="modal-import-export" class="modal-backdrop" role="dialog" aria-modal="true"
+     aria-labelledby="modal-ie-title" hidden>
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-ie-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Importar / Exportar
+      </h2>
+      <button class="modal-close" data-close-modal="modal-import-export" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Exportar -->
+      <div class="form-group">
+        <p class="form-label" style="font-size:var(--font-size-base)">Exportar</p>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+          <button class="btn btn-primary" id="btn-export-all">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Exportar árbol completo
+          </button>
+          <button class="btn btn-ghost" id="btn-export-branch">
+            Exportar rama actual
+          </button>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Importar -->
+      <div class="form-group">
+        <p class="form-label" style="font-size:var(--font-size-base)">Importar</p>
+        <div class="upload-zone" id="import-upload-zone">
+          <input type="file" id="import-file" accept=".json,application/json" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <p>Selecciona un archivo .json exportado</p>
+          <p class="upload-hint">Solo se aceptan archivos exportados por esta app</p>
+        </div>
+      </div>
+
+      <!-- Preview del JSON a importar -->
+      <div id="import-preview" class="form-group" hidden>
+        <label class="form-label">Vista previa del archivo</label>
+        <textarea class="textarea input" id="import-json-preview" rows="8"
+                  readonly style="font-family:monospace;font-size:12px"></textarea>
+      </div>
+
+      <!-- Nombre del importador -->
+      <div id="import-name-field" class="modifier-field" hidden>
+        <label class="form-label" for="import-modified-by">
+          Tu nombre <span class="optional">(opcional)</span>
+        </label>
+        <input class="input" type="text" id="import-modified-by"
+               placeholder="¿Quién está importando este archivo?" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-import-export">Cancelar</button>
+      <button class="btn btn-primary" id="btn-confirm-import" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Confirmar importación
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL: HISTORIAL DE CAMBIOS (AUDIT LOG)
+     ============================================================ -->
+<div id="modal-audit" class="modal-backdrop" role="dialog" aria-modal="true"
+     aria-labelledby="modal-audit-title" hidden>
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-audit-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 3h18v4H3z"/><path d="M3 9h18v4H3z"/><path d="M3 15h18v4H3z"/>
+        </svg>
+        Historial de cambios
+      </h2>
+      <button class="modal-close" data-close-modal="modal-audit" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Filtro -->
+      <div class="form-group">
+        <input class="input" type="text" id="audit-filter-name"
+               placeholder="Filtrar por nombre de modificador…" />
+      </div>
+      <!-- Lista de cambios -->
+      <div id="audit-list">
+        <!-- Se inyecta dinámicamente -->
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal="modal-audit">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CONTENEDOR DE NOTIFICACIONES (TOASTS)
+     ============================================================ -->
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ============================================================
+     SCRIPTS — orden importa (config → supabase → módulos → app)
+     ============================================================ -->
+</div><!-- /#app outer (cierra el div id="app" con clase hidden) -->
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
