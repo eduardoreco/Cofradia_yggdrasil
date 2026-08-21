@@ -315,6 +315,8 @@ function applyLogoLive(url) {
 function openModal(id) {
   const el = document.getElementById(id);
   if (!el) return;
+  // No abrir si ya está visible
+  if (!el.hasAttribute('hidden')) return;
   el.removeAttribute('hidden');
   el.classList.remove('closing');
   const firstInput = el.querySelector('input:not([type="hidden"]), textarea');
@@ -324,6 +326,8 @@ function openModal(id) {
 function closeModal(id) {
   const el = document.getElementById(id);
   if (!el) return;
+  // No cerrar si ya está cerrado o cerrándose
+  if (el.hasAttribute('hidden') || el.classList.contains('closing')) return;
   el.classList.add('closing');
   setTimeout(() => { el.setAttribute('hidden', ''); el.classList.remove('closing'); }, 300);
 }

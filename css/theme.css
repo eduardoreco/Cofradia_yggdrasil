@@ -16,19 +16,19 @@
   --color-yellow:         #F0A500;   /* Amarillo dorado — badges, destacados */
   --color-yellow-light:   #FEF3C7;   /* Amarillo muy claro — fondo de badges */
 
-  /* --- Superficies --- */
-  --color-bg:             #F4F6FA;   /* Fondo de la página */
-  --color-surface:        #FFFFFF;   /* Cards, modales, paneles */
-  --color-surface-alt:    #F0F4F8;   /* Superficies secundarias */
+  /* --- Superficies (dark theme) --- */
+  --color-bg:             #0d1620;   /* Fondo — azul noche profundo */
+  --color-surface:        #152030;   /* Cards, modales — azul oscuro */
+  --color-surface-alt:    #1c2a40;   /* Superficies secundarias */
 
   /* --- Texto --- */
-  --color-text:           #1C1C2E;   /* Texto principal */
-  --color-text-secondary: #4B5563;   /* Texto secundario */
-  --color-muted:          #9CA3AF;   /* Texto deshabilitado / placeholder */
+  --color-text:           #e2e8f4;   /* Texto principal — claro */
+  --color-text-secondary: #8fa3c0;   /* Texto secundario */
+  --color-muted:          #4e6280;   /* Placeholder / deshabilitado */
 
   /* --- Bordes --- */
-  --color-border:         #E5E7EB;   /* Bordes de cards y separadores */
-  --color-border-focus:   #2E6DB4;   /* Borde de inputs con foco */
+  --color-border:         #1e3050;   /* Bordes sutiles */
+  --color-border-focus:   #4a8fd4;   /* Borde de inputs con foco */
 
   /* --- Estados --- */
   --color-success:        #16A34A;

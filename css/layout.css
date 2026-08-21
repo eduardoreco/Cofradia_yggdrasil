@@ -3,10 +3,10 @@
    Cofradía Yggdrasil
    ============================================================================= */
 
-/* --- Fondo con patrón de puntos sutil --- */
+/* --- Fondo oscuro con patrón de puntos sutil --- */
 body {
   background-color: var(--color-bg);
-  background-image: radial-gradient(circle, rgba(26,58,107,0.07) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(74,143,212,0.12) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -153,10 +153,10 @@ body {
    BREADCRUMB
    ============================================================ */
 #breadcrumb-bar {
-  background-color: rgba(255,255,255,0.82);
+  background-color: rgba(21, 32, 48, 0.90);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(26,58,107,0.1);
+  border-bottom: 1px solid rgba(74,143,212,0.15);
   padding: var(--space-2) var(--space-6);
   display: flex;
   align-items: center;
@@ -454,8 +454,8 @@ body {
   right: 0;
   z-index: var(--z-dropdown);
   min-width: 220px;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: linear-gradient(160deg, #1e2f4a 0%, #152030 100%);
+  border: 1px solid rgba(74,143,212,0.20);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
   padding: var(--space-2) 0;

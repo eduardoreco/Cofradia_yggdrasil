@@ -159,19 +159,18 @@ function initModalControls() {
       closeModal(closeBtn.dataset.closeModal);
       return;
     }
-    // Click en el backdrop (fuera del .modal)
-    if (e.target.classList.contains('modal-backdrop')) {
-      const modal = e.target;
-      closeModal(modal.id);
+    // Click en el backdrop — solo si el target ES exactamente el backdrop y no está cerrándose
+    const backdrop = e.target.closest('.modal-backdrop');
+    if (backdrop && e.target === backdrop && !backdrop.classList.contains('closing')) {
+      closeModal(backdrop.id);
     }
   });
 
-  // Cerrar con Escape
+  // Cerrar con Escape — solo modales abiertos y que no estén ya cerrándose
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      const openModal = document.querySelector('.modal-backdrop:not([hidden])');
-      if (openModal) closeModal(openModal.id);
-    }
+    if (e.key !== 'Escape') return;
+    const openModal = document.querySelector('.modal-backdrop:not([hidden]):not(.closing)');
+    if (openModal) closeModal(openModal.id);
   });
 
   // Tabs de imagen (subir / URL) — delegado
@@ -212,16 +211,20 @@ function initModalControls() {
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
+  // No abrir si ya está visible
+  if (!modal.hasAttribute('hidden')) return;
   modal.removeAttribute('hidden');
   modal.classList.remove('closing');
   // Foco accesible
   const firstInput = modal.querySelector('input:not([type="hidden"]), textarea, select');
-  firstInput?.focus();
+  setTimeout(() => firstInput?.focus(), 50);
 }
 
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
+  // No cerrar si ya está cerrado o cerrándose
+  if (modal.hasAttribute('hidden') || modal.classList.contains('closing')) return;
   modal.classList.add('closing');
   setTimeout(() => {
     modal.setAttribute('hidden', '');

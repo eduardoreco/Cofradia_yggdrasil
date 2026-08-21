@@ -6,6 +6,12 @@
 /* ============================================================
    BACKDROP
    ============================================================ */
+/* Ocultar modales con hidden — anula cualquier animación activa */
+.modal-backdrop[hidden] {
+  display: none !important;
+  animation: none !important;
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -31,7 +37,8 @@
    MODAL CONTAINER
    ============================================================ */
 .modal {
-  background-color: var(--color-surface);
+  background: linear-gradient(160deg, #1e2f4a 0%, #152030 100%);
+  border: 1px solid rgba(74,143,212,0.18);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-xl);
   width: 100%;
@@ -69,10 +76,10 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-5) var(--space-6);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(74,143,212,0.15);
   position: sticky;
   top: 0;
-  background-color: var(--color-surface);
+  background: linear-gradient(160deg, #1e2f4a 0%, #162840 100%);
   z-index: 1;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
@@ -335,10 +342,10 @@
   justify-content: flex-end;
   gap: var(--space-3);
   padding: var(--space-4) var(--space-6);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid rgba(74,143,212,0.15);
   position: sticky;
   bottom: 0;
-  background-color: var(--color-surface);
+  background: linear-gradient(160deg, #162840 0%, #152030 100%);
   border-radius: 0 0 var(--radius-xl) var(--radius-xl);
 }
 

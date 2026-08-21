@@ -7,7 +7,7 @@
    CARD BASE
    ============================================================ */
 .card {
-  background: linear-gradient(160deg, #ffffff 0%, #f8fafd 100%);
+  background: linear-gradient(160deg, #1e2f4a 0%, #152030 100%);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
