@@ -124,13 +124,16 @@ async function initApp(userName = null) {
     // 8. Inicializar configuración global
     initSettingsModal();
 
-    // 9. Mostrar saludo en el header
+    // 9. Inicializar menú dropdown del header
+    initHeaderMenu();
+
+    // 10. Mostrar saludo en el header
     _applyUserGreeting(userName || sessionStorage.getItem('ygg_user'));
 
-    // 10. Pre-rellenar campos "Tu nombre" en modales con el nombre del usuario
+    // 11. Pre-rellenar campos "Tu nombre" en modales con el nombre del usuario
     _prefillModifierFields(userName || sessionStorage.getItem('ygg_user'));
 
-    // 11. Navegar al nodo indicado en la URL (o a la raíz)
+    // 12. Navegar al nodo indicado en la URL (o a la raíz)
     const urlParams  = new URLSearchParams(window.location.search);
     const nodeId     = urlParams.get('node') || null;
     await navigateTo(nodeId, false);
@@ -326,6 +329,47 @@ function closeModal(id) {
 }
 
 // =============================================================================
+// HEADER DROPDOWN MENU
+// =============================================================================
+
+function initHeaderMenu() {
+  const btnMore  = document.getElementById('btn-more');
+  const menuWrap = document.getElementById('header-menu-wrap');
+  const menu     = document.getElementById('header-menu');
+
+  if (!btnMore || !menu) return;
+
+  // Toggle al hacer click en ⋮
+  btnMore.addEventListener('click', e => {
+    e.stopPropagation();
+    const isOpen = !menu.hidden;
+    if (isOpen) {
+      _closeHeaderMenu(btnMore, menu);
+    } else {
+      menu.hidden = false;
+      btnMore.setAttribute('aria-expanded', 'true');
+    }
+  });
+
+  // Cerrar al hacer click fuera
+  document.addEventListener('click', e => {
+    if (!menuWrap?.contains(e.target)) {
+      _closeHeaderMenu(btnMore, menu);
+    }
+  });
+
+  // Cerrar al seleccionar cualquier item del menú
+  menu.addEventListener('click', () => {
+    _closeHeaderMenu(btnMore, menu);
+  });
+}
+
+function _closeHeaderMenu(btn, menu) {
+  menu.hidden = true;
+  btn?.setAttribute('aria-expanded', 'false');
+}
+
+// =============================================================================
 // HELPERS DE USUARIO
 // =============================================================================
 
@@ -351,6 +395,13 @@ function _prefillModifierFields(name) {
     if (el && !el.value) el.value = name;
   });
 }
+
+// =============================================================================
+// EXPONER HELPERS GLOBALES (para módulos que no pueden importar desde app.js)
+// =============================================================================
+
+window.openModal  = openModal;
+window.closeModal = closeModal;
 
 // =============================================================================
 // ARRANCAR

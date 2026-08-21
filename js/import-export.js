@@ -20,7 +20,7 @@ export function initImportExport() {
   // Abrir modal
   document.getElementById('btn-import-export')?.addEventListener('click', () => {
     resetImportForm();
-    openModal('modal-import-export');
+    window.openModal('modal-import-export');
   });
 
   // Exportar todo
@@ -78,7 +78,7 @@ async function exportAll() {
 
   downloadJson(exportData, 'yggdrasil-export-completo.json');
   showToast('Árbol exportado correctamente', 'success');
-  closeModal('modal-import-export');
+  window.closeModal('modal-import-export');
 }
 
 async function exportCurrentBranch() {
@@ -104,7 +104,7 @@ async function exportCurrentBranch() {
 
   downloadJson(exportData, filename);
   showToast('Rama exportada correctamente', 'success');
-  closeModal('modal-import-export');
+  window.closeModal('modal-import-export');
 }
 
 function downloadJson(data, filename) {
@@ -184,7 +184,7 @@ async function confirmImport() {
     });
 
     hideLoading();
-    closeModal('modal-import-export');
+    window.closeModal('modal-import-export');
     showToast(`Importación completada: ${importedCount} elementos`, 'success');
     await navigateTo(targetParentId, false);
 
@@ -253,20 +253,3 @@ function resetImportForm() {
   if (confirmBtn) confirmBtn.hidden = true;
 }
 
-// =============================================================================
-// HELPERS
-// =============================================================================
-
-function openModal(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.removeAttribute('hidden');
-  el.classList.remove('closing');
-}
-
-function closeModal(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.add('closing');
-  setTimeout(() => { el.setAttribute('hidden', ''); el.classList.remove('closing'); }, 300);
-}

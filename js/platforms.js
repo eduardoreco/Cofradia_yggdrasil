@@ -34,7 +34,7 @@ export async function loadPlatforms() {
 /** Abre el modal de gestión y renderiza la lista */
 export async function openPlatformsModal() {
   await renderPlatformsList();
-  openModal('modal-platforms');
+  window.openModal('modal-platforms');
 }
 
 async function renderPlatformsList() {
@@ -137,7 +137,7 @@ export function openAddPlatformModal() {
   resetPlatformForm();
   const title = document.getElementById('modal-platform-edit-title');
   if (title) title.textContent = 'Nueva Plataforma';
-  openModal('modal-platform-edit');
+  window.openModal('modal-platform-edit');
 }
 
 function openEditPlatformModal(platform) {
@@ -155,7 +155,7 @@ function openEditPlatformModal(platform) {
   document.getElementById('platform-edit-color').value     = color;
   document.getElementById('platform-edit-color-hex').value = color;
 
-  openModal('modal-platform-edit');
+  window.openModal('modal-platform-edit');
 }
 
 function resetPlatformForm() {
@@ -202,25 +202,8 @@ async function savePlatform() {
   if (result.error) { showToast(`Error: ${result.error.message}`, 'error'); return; }
 
   await loadPlatforms();
-  closeModal('modal-platform-edit');
+  window.closeModal('modal-platform-edit');
   await renderPlatformsList();
   showToast(_editingPlatformId ? 'Plataforma actualizada' : 'Plataforma creada', 'success');
 }
 
-// =============================================================================
-// HELPERS
-// =============================================================================
-
-function openModal(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.removeAttribute('hidden');
-  el.classList.remove('closing');
-}
-
-function closeModal(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.add('closing');
-  setTimeout(() => { el.setAttribute('hidden', ''); el.classList.remove('closing'); }, 300);
-}

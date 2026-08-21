@@ -39,8 +39,7 @@ async function openAuditModal() {
   const list = document.getElementById('audit-list');
   if (list) list.innerHTML = loadingHTML();
 
-  modal.removeAttribute('hidden');
-  modal.classList.remove('closing');
+  window.openModal('modal-audit');
 
   // Cargar datos
   const { data, error } = await getAuditLog(50);
