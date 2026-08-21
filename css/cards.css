@@ -59,33 +59,100 @@
 }
 
 /* ============================================================
-   CARD — IMAGEN
+   CARD — RAMA (branch) — layout horizontal compacto
    ============================================================ */
-.card-image {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  background-color: var(--color-surface-alt);
+.card-branch {
+  cursor: pointer;
+  flex-direction: row;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  gap: var(--space-3);
 }
 
-.card-image-placeholder {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: linear-gradient(135deg, var(--color-primary-pale), var(--color-surface-alt));
+.card-branch:active {
+  transform: translateY(-1px);
+}
+
+.card-branch-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(46,109,180,0.25) 0%, rgba(26,58,107,0.40) 100%);
+  border: 1px solid rgba(74,143,212,0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-muted);
+  color: var(--color-primary-light);
 }
 
-.card-image-placeholder svg {
+.card-branch-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.card-branch-thumb {
+  flex-shrink: 0;
   width: 40px;
   height: 40px;
-  opacity: 0.4;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 1px solid rgba(74,143,212,0.2);
+}
+
+.card-branch-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-branch .card-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-branch .card-description {
+  font-size: var(--font-size-xs);
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-counter {
+  font-size: var(--font-size-xs);
+  color: rgba(74,143,212,0.7);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.card-counter svg {
+  width: 11px;
+  height: 11px;
+}
+
+.card-branch .card-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: var(--space-1);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.card-branch:hover .card-actions {
+  opacity: 1;
 }
 
 /* ============================================================
-   CARD — BODY
+   CARD — BODY (genérico)
    ============================================================ */
 .card-body {
   padding: var(--space-4);
@@ -100,7 +167,6 @@
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   line-height: var(--line-height-tight);
-  /* Limitar a 2 líneas */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -111,7 +177,6 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   line-height: var(--line-height-normal);
-  /* Limitar a 2 líneas */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -119,29 +184,8 @@
   flex: 1;
 }
 
-.card-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-top: auto;
-  padding-top: var(--space-2);
-}
-
-.card-counter {
-  font-size: var(--font-size-xs);
-  color: var(--color-muted);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.card-counter svg {
-  width: 12px;
-  height: 12px;
-}
-
 /* ============================================================
-   CARD — FOOTER (acciones)
+   CARD — FOOTER
    ============================================================ */
 .card-footer {
   display: flex;
@@ -155,7 +199,6 @@
 .card-actions {
   display: flex;
   gap: var(--space-1);
-  /* Ocultar hasta hover */
   opacity: 0;
   transition: opacity var(--transition-fast);
 }
@@ -165,52 +208,48 @@
 }
 
 /* ============================================================
-   CARD — RAMA (branch)
+   CARD — HOJA (leaf / link) — layout horizontal compacto
    ============================================================ */
-.card-branch {
-  cursor: pointer;
+.card-leaf {
+  flex-direction: row;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  gap: var(--space-3);
 }
 
-.card-branch .card-body {
-  cursor: pointer;
-}
-
-.card-branch:active {
-  transform: translateY(-1px);
-}
-
-/* ============================================================
-   CARD — HOJA (leaf / link)
-   ============================================================ */
 .card-leaf .card-body {
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--space-3);
+  padding: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .card-leaf-icon {
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  background-color: var(--color-surface-alt);
+  background: linear-gradient(135deg, rgba(240,165,0,0.15) 0%, rgba(192,57,43,0.15) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(240,165,0,0.2);
 }
 
 .card-leaf-icon img {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
 }
 
 .card-leaf-icon-placeholder {
-  width: 24px;
-  height: 24px;
-  opacity: 0.4;
+  width: 18px;
+  height: 18px;
+  opacity: 0.5;
+  color: var(--color-yellow);
 }
 
 .card-leaf-info {
@@ -219,11 +258,12 @@
 }
 
 .card-leaf-platform {
-  font-size: var(--font-size-xs);
-  color: var(--color-muted);
+  font-size: 10px;
+  color: var(--color-yellow);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 2px;
+  letter-spacing: 0.06em;
+  margin-bottom: 1px;
+  opacity: 0.8;
 }
 
 .card-leaf-label {
@@ -236,12 +276,12 @@
 }
 
 .card-leaf-url {
-  font-size: var(--font-size-xs);
-  color: var(--color-primary-light);
+  font-size: 11px;
+  color: rgba(74,143,212,0.7);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .btn-open-link {
@@ -251,19 +291,32 @@
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   color: var(--color-primary-light);
-  padding: 3px var(--space-2);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-primary-pale);
-  background-color: var(--color-primary-pale);
-  transition: background-color var(--transition-fast);
+  padding: 4px var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(74,143,212,0.3);
+  background: rgba(74,143,212,0.1);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn-open-link:hover {
-  background-color: var(--color-primary-light);
-  color: #fff;
+  background: rgba(74,143,212,0.25);
   border-color: var(--color-primary-light);
+  color: #fff;
   text-decoration: none;
+}
+
+.card-leaf .card-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: var(--space-1);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.card-leaf:hover .card-actions {
+  opacity: 1;
 }
 
 /* ============================================================

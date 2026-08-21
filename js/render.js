@@ -165,35 +165,28 @@ async function createBranchCard(node, onNavigate, onEdit, onDelete) {
   card.className = 'card card-branch';
   card.dataset.nodeId = node.id;
 
-  // Imagen
-  const imgSection = node.image_url
-    ? `<img class="card-image" src="${escapeAttr(node.image_url)}" alt="${escapeAttr(node.name)}" loading="lazy" />`
-    : `<div class="card-image-placeholder">
-         ${folderSVG()}
-       </div>`;
+  // Ícono o thumbnail
+  const iconSection = node.image_url
+    ? `<img class="card-branch-thumb" src="${escapeAttr(node.image_url)}" alt="${escapeAttr(node.name)}" loading="lazy" />`
+    : `<div class="card-branch-icon">${folderSVG()}</div>`;
 
   card.innerHTML = `
-    ${imgSection}
-    <div class="card-body">
+    ${iconSection}
+    <div class="card-branch-info">
       <h3 class="card-title">${escapeHtml(node.name)}</h3>
       ${node.description ? `<p class="card-description">${escapeHtml(node.description)}</p>` : ''}
-      <div class="card-meta">
-        <span class="card-counter">
-          ${folderSmallSVG()}
-          ${childCount} sub-tema${childCount !== 1 ? 's' : ''}
-        </span>
-      </div>
     </div>
-    <div class="card-footer">
-      <span class="text-xs text-muted">Rama</span>
-      <div class="card-actions">
-        <button class="btn-icon" data-action="edit" title="Editar rama" aria-label="Editar ${escapeAttr(node.name)}">
-          ${editSVG()}
-        </button>
-        <button class="btn-icon danger" data-action="delete" title="Eliminar rama" aria-label="Eliminar ${escapeAttr(node.name)}">
-          ${trashSVG()}
-        </button>
-      </div>
+    <span class="card-counter">
+      ${folderSmallSVG()}
+      ${childCount}
+    </span>
+    <div class="card-actions">
+      <button class="btn-icon" data-action="edit" title="Editar rama" aria-label="Editar ${escapeAttr(node.name)}">
+        ${editSVG()}
+      </button>
+      <button class="btn-icon danger" data-action="delete" title="Eliminar rama" aria-label="Eliminar ${escapeAttr(node.name)}">
+        ${trashSVG()}
+      </button>
     </div>
   `;
 
